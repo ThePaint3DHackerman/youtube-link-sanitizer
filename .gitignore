@@ -1,0 +1,31 @@
+# Local credentials and private configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Compiled app, installer, tests and packaging output
+*.exe
+*.dll
+*.pdb
+*.zip
+*.msi
+bin/
+obj/
+dist/
+build/
+installer-source/PayloadHashes.cs
+
+# IDE and Windows metadata
+.vs/
+.idea/
+*.user
+*.suo
+*.log
+*.tmp
+*.bak
+Thumbs.db
+Desktop.ini
