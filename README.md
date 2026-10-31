@@ -14,15 +14,25 @@ Before: https://x.com/coolporyg0n/status/2116327687707123755
 After:  https://fixupx.com/coolporyg0n/status/2116327687707123755
 ```
 
-## Requirements
+## Download for Windows
 
-- Windows 10 or 11 with .NET Framework 4.8.
-- Windows PowerShell 5.1 and the .NET Framework C# compiler for building. The build
-  script checks Windows' 64-bit Framework compiler and falls back to the 32-bit
-  location. No Python, Visual Studio, NuGet, or downloaded build packages are used.
+- **[Download the installer](https://github.com/ThePaint3DHackerman/youtube-link-sanitizer/releases/latest/download/YouTubeLinkCleaner-Setup.exe)** — run it and choose **Install and run**. Startup at sign-in is optional.
+- **[Download the portable ZIP](https://github.com/ThePaint3DHackerman/youtube-link-sanitizer/releases/latest/download/YouTubeLinkCleaner-Portable.zip)** — extract the folder and run `YouTubeLinkCleaner.exe`.
+- [All releases, matching source code, and SHA-256 checksums](https://github.com/ThePaint3DHackerman/youtube-link-sanitizer/releases/latest).
 
-This is a source-only repository. Executables and installers are generated
-locally and excluded from Git. There are no prebuilt downloads in this checkout.
+Requires Windows 10 or 11 with .NET Framework 4.8. No Lua, Python, compiler, or
+build tools are needed to use these downloads. The executables are unsigned, so
+Windows may display an unknown-publisher warning.
+
+Prebuilt packages are attached to GitHub Releases. Generated binaries stay out
+of the Git source history.
+
+## Requirements for building from source
+
+Windows PowerShell 5.1 and the .NET Framework C# compiler are required for
+building. The build script checks Windows' 64-bit Framework compiler and falls
+back to the 32-bit location. No Python, Visual Studio, NuGet, or downloaded build
+packages are used.
 
 ## Build and test
 
