@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("Uninstall YouTube Link Cleaner")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
 
 namespace BarnacleSetup
 {

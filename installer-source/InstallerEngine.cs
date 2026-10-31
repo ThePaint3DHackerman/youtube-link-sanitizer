@@ -72,10 +72,10 @@ namespace BarnacleSetup
             AtomicWrite(UninstallerPath, uninstaller);
             AtomicWrite(Child(InstallDirectory, "README.md"), readme);
             Directory.CreateDirectory(StartMenuDirectory);
-            WriteShortcut(AppMenuLink, AppPath, "", "Clean YouTube share links on the clipboard");
+            WriteShortcut(AppMenuLink, AppPath, "", "Clean YouTube links and fix X embeds on copy");
             WriteShortcut(UninstallMenuLink, UninstallerPath, "", "Remove YouTube Link Cleaner");
             if (startWithWindows)
-                WriteShortcut(StartupLink, AppPath, "--quiet", "Clean YouTube share links on the clipboard");
+                WriteShortcut(StartupLink, AppPath, "--quiet", "Clean YouTube links and fix X embeds on copy");
             else
                 DeleteOwnedShortcut(StartupLink, AppPath);
 
@@ -380,7 +380,7 @@ namespace BarnacleSetup
             {
                 if (key == null) throw new IOException("The per-user uninstall entry could not be created.");
                 key.SetValue("DisplayName", "YouTube Link Cleaner");
-                key.SetValue("DisplayVersion", "1.0.0");
+                key.SetValue("DisplayVersion", "1.1.0");
                 key.SetValue("InstallLocation", InstallDirectory);
                 key.SetValue("UninstallString", "\"" + UninstallerPath + "\"");
                 key.SetValue("QuietUninstallString", "\"" + UninstallerPath + "\" --silent");

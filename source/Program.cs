@@ -8,8 +8,8 @@ using System.Threading;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("YouTube Link Cleaner")]
-[assembly: AssemblyDescription("Local clipboard cleaner for YouTube si share parameters")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyDescription("Local YouTube link cleaner and X embed link rewriter")]
+[assembly: AssemblyVersion("1.1.0.0")]
 
 namespace Barnacle
 {
@@ -124,7 +124,7 @@ namespace Barnacle
                 tray = new NotifyIcon { Icon = activeIcon, Text = "YouTube Link Cleaner - active", ContextMenuStrip = menu, Visible = true };
                 tray.DoubleClick += delegate { ShowStatus(); };
                 hotkeyRegistered = RegisterHotKey(window.Handle, 1, 0x4003, 0x56); // Ctrl+Alt+V, no repeat.
-                if (!quiet) Balloon("Running in the background. YouTube si parameters are removed on copy. Right-click this icon for controls.");
+                if (!quiet) Balloon("Running in the background. YouTube si parameters are removed and X links become fixupx.com on copy. Right-click this icon for controls.");
             }
             // Include a link already on the clipboard at launch.
             AttemptClean();
@@ -199,9 +199,9 @@ namespace Barnacle
             MessageBox.Show("Automatic cleaning: " + (Paused ? "paused" : "active") + "\r\nCopies cleaned this session: " + CleanedCount +
                 "\r\nLast clipboard check: " + OutcomeText(LastOutcome) +
                 "\r\nClean-before-paste shortcut: " + (hotkeyRegistered ? "Ctrl+Alt+V" : "unavailable (another app may use it)") +
-                "\r\n\r\nRemoves only si from YouTube links, preserving timestamps, playlists and surrounding text. Matching rich text becomes plain text. Files, images, sensitive excluded items and text over 1 MiB are skipped." +
+                "\r\n\r\nRemoves si from YouTube links and rewrites x.com/www.x.com to fixupx.com for embeds, preserving the rest of each URL and surrounding text. Matching rich text becomes plain text. Files, images, sensitive excluded items and text over 1 MiB are skipped." +
                 "\r\n\r\nClipboard notifications are asynchronous. Ctrl+Alt+V checks again before pasting into the focused app. It does not send a message or press Enter." +
-                "\r\n\r\nRuns locally. No network requests, telemetry or clipboard logs. This removes a URL parameter; it does not provide anonymity or erase clipboard history.",
+                "\r\n\r\nRuns locally. No network requests, telemetry or clipboard logs. Opening rewritten X links or generating their previews uses the external FixupX service. This does not provide anonymity or erase clipboard history.",
                 "YouTube Link Cleaner", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -209,7 +209,7 @@ namespace Barnacle
         {
             switch (value)
             {
-                case CleanOutcome.Cleaned: return "YouTube si parameter removed.";
+                case CleanOutcome.Cleaned: return "YouTube parameter removed or X embed link rewritten.";
                 case CleanOutcome.Unchanged: return "Text needed no changes.";
                 case CleanOutcome.Busy: return "Clipboard is busy; try copying again.";
                 case CleanOutcome.NonText: return "Clipboard has no text.";
