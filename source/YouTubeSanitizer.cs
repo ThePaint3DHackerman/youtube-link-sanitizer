@@ -10,12 +10,12 @@ namespace Barnacle
     public static class YouTubeSanitizer
     {
         private static readonly Regex UrlTokens = new Regex(
-            @"(?<![\p{L}\p{N}_./\\:@%?&=+\-])(?<wrappers>(?:\*{1,3}|_{1,3}|~~|\|\|)*)(?<url>(?:https?://|(?:[a-z0-9-]+\.)*(?:youtube\.com|youtube-nocookie\.com|youtu\.be))(?:(?!\)[\[(])[^\s<>""'`])*)",
+            @"(?<![\p{L}\p{N}_./\\:@%?&=+\-])(?<wrappers>(?:\*{1,3}|_{1,3}|~~|\|\|)*)(?<url>(?:https?://|(?:[a-z0-9-]+\.)*(?:youtube\.com|youtube-nocookie\.com|youtu\.be|x\.com))(?:(?!\)[\[(])[^\s<>""'`])*)",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
             TimeSpan.FromSeconds(1));
 
         private static readonly Regex AdjacentUrl = new Regex(
-            @"[,;](?:https?://|(?:[a-z0-9-]+\.)*(?:youtube\.com|youtube-nocookie\.com|youtu\.be))",
+            @"[,;](?:https?://|(?:[a-z0-9-]+\.)*(?:youtube\.com|youtube-nocookie\.com|youtu\.be|x\.com))",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
             TimeSpan.FromSeconds(1));
 
@@ -59,7 +59,10 @@ namespace Barnacle
                 url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? url : "https://" + url;
             if (!Uri.TryCreate(qualified, UriKind.Absolute, out parsed) ||
                 (parsed.Scheme != Uri.UriSchemeHttp && parsed.Scheme != Uri.UriSchemeHttps) ||
-                parsed.UserInfo.Length != 0 || !IsYouTubeHost(parsed.Host)) return token;
+                parsed.UserInfo.Length != 0) return token;
+
+            if (IsXHost(parsed.Host)) return RewriteXHost(url, token.Substring(length));
+            if (!IsYouTubeHost(parsed.Host)) return token;
 
             int fragment = url.IndexOf('#');
             int query = url.IndexOf('?');
@@ -101,6 +104,29 @@ namespace Barnacle
             if (fragment >= 0) result.Append(url.Substring(fragment));
             result.Append(token.Substring(length));
             return result.ToString();
+        }
+
+        private static bool IsXHost(string host)
+        {
+            if (host.EndsWith(".", StringComparison.Ordinal)) host = host.Substring(0, host.Length - 1);
+            return String.Equals(host, "x.com", StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(host, "www.x.com", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string RewriteXHost(string url, string punctuation)
+        {
+            // Edit the original authority only; do not reserialize path/query/fragment.
+            int authorityStart = url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? 8 :
+                url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ? 7 : 0;
+            int authorityEnd = url.IndexOfAny(new[] { '/', '?', '#' }, authorityStart);
+            if (authorityEnd < 0) authorityEnd = url.Length;
+            string authority = url.Substring(authorityStart, authorityEnd - authorityStart);
+            int port = authority.IndexOf(':');
+            string host = port >= 0 ? authority.Substring(0, port) : authority;
+            // Reject encoded/normalized authorities that only Uri considers x.com.
+            if (!IsXHost(host)) return url + punctuation;
+            return url.Substring(0, authorityStart) + "fixupx.com" +
+                (port >= 0 ? authority.Substring(port) : "") + url.Substring(authorityEnd) + punctuation;
         }
 
         private static bool IsYouTubeHost(string host)

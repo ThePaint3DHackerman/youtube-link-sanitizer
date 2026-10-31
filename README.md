@@ -1,13 +1,17 @@
 # YouTube Link Sanitizer
 
 A small Windows notification-area utility that removes the `si` share parameter
-from YouTube links on the clipboard. The repository is named
+from YouTube links and rewrites X links to FixupX for Discord embeds.
+The repository is named
 `youtube-link-sanitizer`; the existing application and executable names remain
 **YouTube Link Cleaner** and `YouTubeLinkCleaner.exe`.
 
 ```text
 Before: https://youtu.be/dQw4w9WgXcQ?si=share-token&t=69
 After:  https://youtu.be/dQw4w9WgXcQ?t=69
+
+Before: https://x.com/coolporyg0n/status/2116327687707123755
+After:  https://fixupx.com/coolporyg0n/status/2116327687707123755
 ```
 
 ## Requirements
@@ -60,7 +64,7 @@ Run the newly built `YouTubeLinkCleaner.exe` to use it without installing. Close
 it through its notification-area menu. Right-click its tray icon (possibly under
 the Windows `^` overflow arrow) to pause/resume, clean now, view status, or exit.
 
-Copy a YouTube link and paste normally into Discord or another desktop app.
+Copy a YouTube or X link and paste normally into Discord or another desktop app.
 **Ctrl+Alt+V** requests cleaning immediately before pasting into the active app.
 Windows clipboard notifications are asynchronous: an extremely fast ordinary
 paste can happen before cleaning. Another clipboard writer can still interfere.
@@ -101,8 +105,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Uninstall.ps1
 - Only `si` query parameters on supported YouTube hosts are removed. Timestamps,
   video IDs, playlists, other parameters, fragments, and surrounding text are
   retained. Ambiguous inputs can be left unchanged.
-- A cleaned item becomes plain text, removing rich HTML/RTF that could contain a
-  stale hidden URL. Other text, file and image items remain unchanged.
+- The exact hosts `x.com` and `www.x.com` become `fixupx.com`. HTTP(S) and bare
+  links are supported; paths, query strings, fragments, and surrounding text are
+  preserved. Already rewritten links, other subdomains, unrelated sites and
+  lookalike domains are left alone. Ambiguous adjacent URLs can be left unchanged.
+- FixupX is an external embed service. Opening a rewritten link or generating a
+  preview uses that service; the clipboard utility itself performs no requests.
+  Embed availability depends on the service and post. See the
+  [FxEmbed/FixupX project](https://github.com/FxEmbed/FxEmbed).
+- A cleaned or rewritten item becomes plain text, removing rich HTML/RTF that
+  could contain a stale hidden URL. Other text, file and image items remain
+  unchanged.
 - Text beyond the 1 MiB limit and items marked as sensitive or excluded from
   monitoring are skipped.
 - The application sends no network requests and does not store clipboard text,

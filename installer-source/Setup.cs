@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 [assembly: AssemblyTitle("YouTube Link Cleaner Setup")]
 [assembly: AssemblyDescription("Per-user installer for YouTube Link Cleaner")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
 
 namespace BarnacleSetup
 {
@@ -88,7 +88,7 @@ namespace BarnacleSetup
             using (Stream icon = Assembly.GetExecutingAssembly().GetManifestResourceStream("payload.icon"))
                 if (icon != null) Icon = new Icon(icon);
             Controls.Add(new Label { Text = "YouTube Link Cleaner", Font = new Font("Segoe UI", 21, FontStyle.Bold), ForeColor = Color.FromArgb(24, 125, 105), AutoSize = true, Location = new Point(28, 22) });
-            Controls.Add(new Label { Text = "Clean YouTube links automatically in Discord and other apps.\r\nKeeps video timestamps and playlists; removes the si share parameter.", Location = new Point(30, 80), Size = new Size(512, 48) });
+            Controls.Add(new Label { Text = "Clean YouTube links and fix X embeds in Discord and other apps.\r\nRemoves YouTube si; rewrites x.com links to fixupx.com.", Location = new Point(30, 80), Size = new Size(512, 48) });
             startup = new CheckBox { Text = "Start automatically when I sign in to Windows", Checked = true, AutoSize = true, Location = new Point(30, 146) };
             run = new CheckBox { Text = "Run YouTube Link Cleaner after installation", Checked = true, AutoSize = true, Location = new Point(30, 177) };
             Controls.Add(startup); Controls.Add(run);

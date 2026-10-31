@@ -63,7 +63,7 @@ if (-not $NoStartup) {
     $shortcut.TargetPath = $installedExe
     $shortcut.Arguments = '--quiet'
     $shortcut.WorkingDirectory = $installDirectory
-    $shortcut.Description = 'Remove si parameters from copied YouTube links'
+    $shortcut.Description = 'Clean YouTube links and fix X embeds on copy'
     $shortcut.IconLocation = "$installedExe,0"
     $shortcut.Save()
 }
