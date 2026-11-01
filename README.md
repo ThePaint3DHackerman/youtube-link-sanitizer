@@ -27,6 +27,13 @@ Windows may display an unknown-publisher warning.
 Prebuilt packages are attached to GitHub Releases. Generated binaries stay out
 of the Git source history.
 
+## Code signing policy
+
+We are preparing an application for free open-source signing through SignPath
+Foundation. Approval has not been granted; current v1.1.0 downloads are unsigned.
+See the [Code signing policy](CODE_SIGNING_POLICY.md) for the planned attribution,
+maintainer and approval roles, signing rules, and privacy policy.
+
 ## Requirements for building from source
 
 Windows PowerShell 5.1 and the .NET Framework C# compiler are required for
