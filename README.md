@@ -41,6 +41,18 @@ building. The build script checks Windows' 64-bit Framework compiler and falls
 back to the 32-bit location. No Python, Visual Studio, NuGet, or downloaded build
 packages are used.
 
+## Automated builds
+
+[GitHub Actions](https://github.com/ThePaint3DHackerman/youtube-link-sanitizer/actions/workflows/windows-build.yml)
+builds the app and installer on Windows for pushes to `main`, version tags, and
+pull requests targeting `main`. It can also be started with **Run workflow**.
+Each run executes the parser tests and verifies the installer's embedded payloads.
+Successful runs provide a downloadable artifact containing the unsigned app,
+installer, guide, license, checksums, and source-commit/build-run information.
+Artifacts are retained for 30 days and require GitHub sign-in to download.
+Public releases remain available through the download links above. These builds
+do not yet perform SignPath signing or automatically publish GitHub Releases.
+
 ## Build and test
 
 Open PowerShell in the repository folder and run:

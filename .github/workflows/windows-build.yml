@@ -1,0 +1,49 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run parser tests
+        run: ./Test.ps1
+      - name: Build application
+        run: ./Build.ps1
+      - name: Build installer and verify embedded payloads
+        run: ./installer-source/BuildSetup.ps1
+      - name: Prepare unsigned build artifacts
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Path artifacts -Force | Out-Null
+          Copy-Item -LiteralPath YouTubeLinkCleaner.exe,YouTubeLinkCleaner-Setup.exe,LICENSE,THIRD-PARTY-NOTICES.md -Destination artifacts
+          Copy-Item -LiteralPath installer-source/QuickGuide.md -Destination artifacts
+          @("Source commit: $env:GITHUB_SHA", "Build run: https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID", 'Unsigned build. SignPath signing is not configured.') | Set-Content -LiteralPath artifacts/BUILD-INFO.txt -Encoding UTF8
+          $hashes = Get-ChildItem -LiteralPath artifacts -File | Sort-Object Name | ForEach-Object {
+            '{0}  {1}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $_.Name
+          }
+          $hashes | Set-Content -LiteralPath artifacts/SHA256SUMS.txt -Encoding ASCII
+      - name: Upload unsigned Windows build
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: YouTubeLinkCleaner-Windows-${{ github.sha }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30
